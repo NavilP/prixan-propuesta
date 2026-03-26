@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App de Censo Digital — Propuesta de Proyecto</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#18181a;--mid:#52525b;--light:#a1a1aa;--border:#e4e4e7;
+  --cream:#fafaf9;--cream2:#f4f4f5;
+  --g50:#f0fdf4;--g200:#bbf7d0;--g600:#16a34a;--g700:#15803d;--g800:#166534;
+  --b50:#eff6ff;--b200:#bfdbfe;--b600:#2563eb;--b700:#1d4ed8;--b800:#1e40af;
+  --a50:#fffbeb;--a200:#fde68a;--a600:#d97706;--a700:#b45309;--a800:#92400e;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;font-weight:300;background:#fff;color:var(--ink);line-height:1.7}
+
+/* NAV */
+nav{position:sticky;top:0;background:rgba(255,255,255,.96);border-bottom:1px solid var(--border);z-index:100;padding:0 40px}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;gap:24px}
+.nav-brand{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-links a{font-size:12px;color:var(--mid);text-decoration:none;padding:4px 10px;border-radius:6px;transition:background .15s}
+.nav-links a:hover{background:var(--cream2)}
+
+/* LAYOUT */
+.page{max-width:900px;margin:0 auto;padding:0 40px}
+section{padding:64px 0;border-bottom:1px solid var(--border)}
+section:last-child{border-bottom:none}
+
+/* COVER */
+.cover{background:var(--ink);color:#fff;padding:72px 40px 60px;position:relative;overflow:hidden}
+.cover-inner{max-width:900px;margin:0 auto}
+.cover::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.03)}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:22px}
+.cover-title{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,50px);font-weight:400;line-height:1.1;margin-bottom:18px;max-width:600px}
+.cover-sub{font-size:15px;color:rgba(255,255,255,.55);max-width:480px;margin-bottom:48px}
+.cover-meta{display:flex;gap:40px;flex-wrap:wrap}
+.meta-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+.meta-val{font-size:13px;color:rgba(255,255,255,.75)}
+
+/* TYPOGRAPHY */
+.sec-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--light);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+h2{font-family:'Fraunces',serif;font-size:26px;font-weight:400;margin-bottom:14px}
+h3{font-size:13px;font-weight:500;margin-bottom:8px}
+p{font-size:14.5px;color:var(--mid);margin-bottom:10px}
+p:last-child{margin-bottom:0}
+
+/* PROPÓSITO */
+.prop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:28px}
+.prop-item{background:#fff;padding:22px 20px}
+.prop-icon{width:30px;height:30px;border-radius:7px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.ic-g{background:var(--g50)}
+.ic-b{background:var(--b50)}
+.ic-a{background:var(--a50)}
+
+/* ROLES */
+.roles-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+.role-card{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.role-head{padding:16px 20px 12px;border-bottom:1px solid var(--border)}
+.role-head.rg{background:var(--g50)}
+.role-head.rb{background:var(--b50)}
+.role-head.ra{background:var(--a50)}
+.rtag{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.rtag.tg{color:var(--g700)}
+.rtag.tb{color:var(--b700)}
+.rtag.ta{color:var(--a700)}
+.role-title{font-size:15px;font-weight:500}
+.role-body{padding:14px 20px 16px}
+.cap-list{list-style:none}
+.cap-list li{font-size:13px;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+.cap-list li:last-child{border-bottom:none}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--light);flex-shrink:0;margin-top:7px}
+
+/* OPTIONS NAV */
+.opt-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap}
+.opt-tab{padding:7px 18px;border-radius:8px;border:1px solid var(--border);font-size:13px;cursor:pointer;background:transparent;color:var(--mid);font-family:'DM Sans',sans-serif;font-weight:400;transition:all .15s}
+.opt-tab:hover{background:var(--cream2)}
+.opt-tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.opt-pane{display:none}
+.opt-pane.on{display:block}
+
+/* MODULE BLOCKS */
+.mod-list{margin-top:6px}
+.mod-item{display:grid;grid-template-columns:44px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--border)}
+.mod-item:last-child{border-bottom:none}
+.mod-letter{font-family:'Fraunces',serif;font-size:26px;color:var(--border);line-height:1;padding-top:2px}
+.mod-content h3{margin-bottom:5px}
+.mod-content p{font-size:13.5px;margin-bottom:6px}
+.feat-list{list-style:none;margin-top:8px}
+.feat-list li{font-size:13px;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+.feat-list li:last-child{border-bottom:none}
+
+/* FEATURE BADGES */
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:400;margin:2px 2px 2px 0}
+.bg{background:var(--g50);color:var(--g800)}
+.bb{background:var(--b50);color:var(--b800)}
+.ba{background:var(--a50);color:var(--a800)}
+.bn{background:var(--cream2);color:var(--mid)}
+
+/* INCLUDED / NOT */
+.inc{color:var(--g600);font-size:13px}
+.no{color:var(--light);font-size:13px}
+
+/* TIME TABLE */
+.time-block{margin-top:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.time-head{background:var(--cream2);padding:10px 16px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mid)}
+.time-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.time-cell{padding:16px;border-right:1px solid var(--border);text-align:center}
+.time-cell:last-child{border-right:none}
+.time-n{font-size:11px;color:var(--light);margin-bottom:6px;font-weight:500}
+.time-val{font-size:18px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.time-sub{font-size:11px;color:var(--light)}
+.time-note{padding:10px 16px;font-size:12px;color:var(--mid);border-top:1px solid var(--border);background:#fff}
+
+/* COMPARE TABLE */
+.compare{width:100%;border-collapse:collapse;font-size:13px;margin-top:28px}
+.compare th{padding:10px 14px;text-align:left;font-weight:500;font-size:11px;color:var(--mid);border-bottom:1px solid var(--border);background:var(--cream2)}
+.compare th:first-child{width:38%}
+.compare td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--ink)}
+.compare tr:last-child td{border-bottom:none}
+.compare tr:hover td{background:var(--cream)}
+.chk{color:var(--g600)}
+.dash{color:var(--border)}
+.optcol{text-align:center}
+
+/* REQUIREMENTS */
+.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+.req-block{background:var(--cream);border-radius:10px;padding:18px 20px}
+.req-block h3{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--light);margin-bottom:10px;font-weight:500}
+.req-list{list-style:none}
+.req-list li{font-size:13px;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start}
+.req-list li:last-child{border-bottom:none}
+
+/* NOTE */
+.note{font-size:12.5px;color:var(--mid);background:var(--cream);border-radius:8px;padding:10px 14px;margin-top:16px;border-left:2px solid var(--border);line-height:1.6}
+
+/* FOOTER */
+footer{background:var(--cream);padding:32px 40px;text-align:center}
+footer p{font-size:12px;color:var(--light)}
+
+@media(max-width:640px){
+  .cover{padding:48px 20px 40px}
+  .page{padding:0 20px}
+  nav{padding:0 20px}
+  .prop-grid,.roles-grid,.req-grid,.time-grid{grid-template-columns:1fr}
+  .roles-grid .role-card:last-child{grid-column:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-inner">
+    <p class="eyebrow">Propuesta de proyecto · Versión 1.0 · Para el cliente</p>
+    <h1 class="cover-title">App de Censo Digital<br>Hopelchén, Campeche</h1>
+    <p class="cover-sub">Plataforma móvil offline-first para la captura segura de datos censales.</p>
+    <div class="cover-meta">
+      <div><p class="meta-label">Plataforma</p><p class="meta-val">Android · React Native</p></div>
+      <div><p class="meta-label">Distribución</p><p class="meta-val">APK directo</p></div>
+      <div><p class="meta-label">Fecha del documento</p><p class="meta-val">Marzo 2026</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- 01 PROPÓSITO -->
+<section id="proposito">
+  <p class="sec-label">01 — Propósito</p>
+  <h2>¿Qué es y para qué sirve?</h2>
+  <p>La aplicación permite a encuestadores del municipio capturar registros de viviendas y ciudadanos directamente desde un teléfono Android, <strong>sin necesidad de internet</strong>. Los datos se guardan en el dispositivo y se sincronizan automáticamente cuando hay señal.</p>
+  <p>El sistema está diseñado para las condiciones reales de Hopelchén: zonas con señal intermitente.</p>
+  <div class="prop-grid">
+    <div class="prop-item"><h3>Captura de datos</h3><p style="font-size:13px">Formulario digital con datos del ciudadano y de la vivienda.</p></div>
+    <div class="prop-item"><h3>Sincronización</h3><p style="font-size:13px">Los datos se envían solos a la nube cuando hay señal. Sin señal, permanecen en el teléfono.</p></div>
+    <div class="prop-item"><h3>Seguridad</h3><p style="font-size:13px">Datos cifrados y se controla quién puede ver qué dentro de la app.</p></div>
+  </div>
+</section>
+
+<!-- 02 ROLES -->
+<section id="roles">
+  <p class="sec-label">02 — Roles de usuario</p>
+  <h2>¿Quién usa la app y qué puede hacer?</h2>
+  <p>La aplicación maneja dos perfiles con permisos distintos. Cada uno entra con usuario y contraseña.</p>
+  <div class="roles-grid">
+    <div class="role-card">
+      <div class="role-head rg"><p class="rtag tg">Perfil 1</p><p class="role-title">Encuestador de campo</p></div>
+      <div class="role-body">
+        <ul class="cap-list">
+          <li><span class="dot"></span>Iniciar sesión con usuario y contraseña</li>
+          <li><span class="dot"></span>Llenar el formulario de censo</li>
+          <li><span class="dot"></span>Trabajar sin internet y sincronizar después</li>
+          <li><span class="dot"></span>Ver únicamente sus propias capturas</li>
+        </ul>
+      </div>
+    </div>
+    <div class="role-card">
+      <div class="role-head rb"><p class="rtag tb">Perfil 2</p><p class="role-title">Administrador</p></div>
+      <div class="role-body">
+        <ul class="cap-list">
+          <li><span class="dot"></span>Ver todas las encuestas capturadas</li>
+          <li><span class="dot"></span>Filtrar por encuestador, zona o fecha</li>
+          <li><span class="dot"></span>Revisar el avance del censo</li>
+          <li><span class="dot"></span>Gestionar cuentas de encuestadores</li>
+        </ul>
+      </div>
+    </div>
+    <div class="role-card" style="grid-column:span 2">
+      <div class="role-head ra"><p class="rtag ta">Perfil 3</p><p class="role-title">Ciudadano encuestado &nbsp;·&nbsp; <span style="font-weight:300;font-size:13px">No requiere cuenta ni teléfono propio</span></p></div>
+      <div class="role-body">
+        <ul class="cap-list" style="columns:2;gap:20px">
+          <li><span class="dot"></span>Presentar su INE para captura de datos</li>
+          <li><span class="dot"></span>Confirmar o corregir sus datos en pantalla</li>
+          <li><span class="dot"></span>Firmar en la pantalla del encuestador (según opción elegida)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 MÓDULOS / OPCIONES -->
+<section id="opciones">
+  <p class="sec-label">03 — Módulos funcionales</p>
+  <h2>¿Qué hace la aplicación, paso a paso?</h2>
+  <p>La propuesta incluye tres opciones. Cada una amplía las capacidades de la anterior. A continuación se detalla qué hace cada módulo en cada opción.</p>
+
+  <div class="opt-tabs">
+    <button class="opt-tab on" onclick="showOpt('o1',this)">Opción 1</button>
+    <button class="opt-tab" onclick="showOpt('o2',this)">Opción 2</button>
+    <button class="opt-tab" onclick="showOpt('o3',this)">Opción 3</button>
+  </div>
+
+  <!-- OPCIÓN 1 -->
+  <div id="o1" class="opt-pane on">
+    <div class="mod-list">
+
+      <div class="mod-item">
+        <div class="mod-letter">A</div>
+        <div class="mod-content">
+          <h3>Autenticación y seguridad</h3>
+          <p>Los encuestadores y el administrador ingresan con usuario y contraseña. Si no hay señal en campo, la sesión permanece activa en el teléfono para que puedan seguir trabajando sin problemas.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Inicio de sesión: usuario y contraseña con acceso seguro</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Roles de acceso: administrador ve todo; encuestador solo sus capturas</li>
+            <li><span class="dot"></span><span class="inc">✓</span> El encuestador puede entrar a la app aunque no haya señal</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">B</div>
+        <div class="mod-content">
+          <h3>Formulario de censo y sincronización sin internet</h3>
+          <p>El encuestador llena todos los datos del ciudadano y la vivienda de forma manual en el teléfono. Los registros se guardan aunque no haya señal y se envían solos a la nube en cuanto detecta internet.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Formulario completo: CURP, nombre, domicilio y datos de vivienda (llenado manual)</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Preguntas adicionales configurables según el censo</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Guardar sin internet: al detectar Wi-Fi o 4G, sube todo lo pendiente automáticamente</li>
+            <li><span class="dot"></span><span class="no">—</span> Captura automática con cámara e INE: no incluido en esta opción</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">C</div>
+        <div class="mod-content">
+          <h3>Panel del administrador</h3>
+          <p>Vista dentro de la app donde el administrador puede ver el avance del censo y los registros capturados por cada encuestador.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Lista de registros con filtros básicos por encuestador y fecha</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Estadísticas básicas: total de encuestas del día, registros por encuestador, cuántas están pendientes de enviar</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="time-block" style="margin-top:32px">
+      <div class="time-head">Tiempo estimado de desarrollo — Opción 1</div>
+      <div class="time-grid">
+        <div class="time-cell"><div class="time-n">1 programador</div><div class="time-val">4 – 5 meses</div><div class="time-sub">aprox. 16–20 semanas</div></div>
+        <div class="time-cell"><div class="time-n">2 programadores</div><div class="time-val">2.5 – 3 meses</div><div class="time-sub">aprox. 10–13 semanas</div></div>
+        <div class="time-cell"><div class="time-n">3 programadores</div><div class="time-val">2 – 2.5 meses</div><div class="time-sub">aprox. 7–9 semanas</div></div>
+      </div>
+      <div class="time-note">Con dos o tres programadores algunas partes pueden desarrollarse al mismo tiempo, lo que reduce el tiempo total de forma considerable.</div>
+    </div>
+  </div>
+
+  <!-- OPCIÓN 2 -->
+  <div id="o2" class="opt-pane">
+    <div class="mod-list">
+
+      <div class="mod-item">
+        <div class="mod-letter">A</div>
+        <div class="mod-content">
+          <h3>Autenticación y seguridad</h3>
+          <p>Mismo sistema de acceso que la Opción 1. El encuestador entra con usuario y contraseña y puede operar sin internet.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Inicio de sesión con usuario y contraseña</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Roles de acceso: administrador ve todo; encuestador solo sus capturas</li>
+            <li><span class="dot"></span><span class="inc">✓</span> El encuestador puede entrar a la app aunque no haya señal</li>
+            <li><span class="dot"></span><span class="no">—</span> Verificación con huella dactilar: no incluido en esta opción</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">B</div>
+        <div class="mod-content">
+          <h3>Captura automática con cámara y GPS</h3>
+          <p>La cámara del teléfono hace el trabajo pesado: lee los datos de la INE automáticamente y registra la ubicación exacta de cada vivienda en el momento de la captura. Las fotos no aparecen en la galería del teléfono; solo la app puede acceder a ellas.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Foto de vivienda con coordenadas GPS del momento exacto de la captura</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Lectura automática de INE: extrae nombre, CURP y domicilio sin necesidad de internet</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Las fotos se guardan de forma privada dentro de la app</li>
+            <li><span class="dot"></span><span class="no">—</span> Nota: la lectura automática puede fallar si la foto de la INE está borrosa o mal iluminada. En ese caso, los datos se pueden capturar manualmente.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">C</div>
+        <div class="mod-content">
+          <h3>Formulario de censo y sincronización sin internet</h3>
+          <p>Después de fotografiar la INE, los datos del ciudadano se rellenan solos en el formulario. El encuestador solo necesita revisar, completar las preguntas adicionales y guardar. Todo se sincroniza automáticamente cuando hay señal.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Formulario con llenado automático después de fotografiar la credencial</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Preguntas adicionales configurables según el censo</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Guardar sin internet: sube todo automáticamente al detectar Wi-Fi o 4G</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">D</div>
+        <div class="mod-content">
+          <h3>Firma del ciudadano</h3>
+          <p>El ciudadano firma con el dedo directamente en la pantalla del teléfono del encuestador. Esta firma tiene validez legal en México como Firma Electrónica Simple, lo que da respaldo al censo.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> El ciudadano firma con el dedo en la pantalla — válido legalmente en México</li>
+            <li><span class="dot"></span><span class="no">—</span> Verificación facial (comparar rostro con foto de INE): no incluido en esta opción</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">E</div>
+        <div class="mod-content">
+          <h3>Panel del administrador</h3>
+          <p>El administrador puede ver todos los registros, filtrarlos y seguir el avance del censo con estadísticas en tiempo real.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Lista de registros con filtros por encuestador y fecha</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Estadísticas básicas: total del día, registros por encuestador, pendientes de enviar</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Contador en tiempo real de encuestas completadas — requiere tiempo adicional de desarrollo</li>
+            <li><span class="dot"></span><span class="no">—</span> Gráficas por zona y mapa de zonas pendientes: no incluidos en esta opción</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="time-block" style="margin-top:32px">
+      <div class="time-head">Tiempo estimado de desarrollo — Opción 2</div>
+      <div class="time-grid">
+        <div class="time-cell"><div class="time-n">1 programador</div><div class="time-val">5.5 – 7 meses</div><div class="time-sub">aprox. 22–28 semanas</div></div>
+        <div class="time-cell"><div class="time-n">2 programadores</div><div class="time-val">3.5 – 4.5 meses</div><div class="time-sub">aprox. 14–18 semanas</div></div>
+        <div class="time-cell"><div class="time-n">3 programadores</div><div class="time-val">2.5 – 3 meses</div><div class="time-sub">aprox. 9–12 semanas</div></div>
+      </div>
+      <div class="time-note">Esta opción es más extensa que la Opción 1 por la integración de la cámara, la lectura de INE y la firma digital. Los tiempos incluyen margen de holgura. Con tres programadores trabajando en paralelo el tiempo se reduce de forma importante respecto a trabajar solo. La inversión necesaria es mayor que en la Opción 1.</div>
+    </div>
+  </div>
+
+  <!-- OPCIÓN 3 -->
+  <div id="o3" class="opt-pane">
+    <div class="mod-list">
+
+      <div class="mod-item">
+        <div class="mod-letter">A</div>
+        <div class="mod-content">
+          <h3>Autenticación y seguridad</h3>
+          <p>Acceso con usuario y contraseña, igual que las opciones anteriores. Se añade la verificación con huella dactilar del encuestador para mayor seguridad e identificación inequívoca de quién realizó cada captura.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Inicio de sesión con usuario y contraseña</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Roles de acceso: administrador ve todo; encuestador solo sus capturas</li>
+            <li><span class="dot"></span><span class="inc">✓</span> El encuestador puede entrar a la app aunque no haya señal</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Verificación con huella dactilar: el encuestador confirma su identidad usando la huella del teléfono</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">B</div>
+        <div class="mod-content">
+          <h3>Captura automática con cámara y GPS</h3>
+          <p>Igual que en la Opción 2: lectura automática de INE, foto de vivienda con GPS y almacenamiento privado de imágenes.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Foto de vivienda con coordenadas GPS del momento de la captura</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Lectura automática de INE sin internet (puede fallar con fotos mal iluminadas)</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Las fotos se guardan de forma privada</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">C</div>
+        <div class="mod-content">
+          <h3>Formulario de censo y sincronización sin internet</h3>
+          <p>Mismo formulario con llenado automático y sincronización automática de las opciones anteriores.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Formulario con llenado automático después de fotografiar la credencial</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Preguntas adicionales configurables</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Guardar sin internet y sincronizar automáticamente al detectar señal</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">D</div>
+        <div class="mod-content">
+          <h3>Firma del ciudadano y verificación facial</h3>
+          <p>Además de la firma en pantalla, esta opción incluye un paso de verificación facial: la app compara una foto del ciudadano con la foto de su INE para confirmar que es la misma persona. Esto añade un nivel de seguridad mayor al proceso.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> El ciudadano firma con el dedo en la pantalla — válido legalmente en México</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Verificación facial: compara el rostro del ciudadano con la foto de su INE</li>
+            <li><span class="dot"></span><span class="no">→</span> Importante: la verificación facial requiere conexión a internet en el momento de validar. En zonas sin señal, este paso no podrá realizarse.</li>
+            <li><span class="dot"></span><span class="no">→</span> Tiene un costo operativo por uso.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mod-item">
+        <div class="mod-letter">E</div>
+        <div class="mod-content">
+          <h3>Panel del administrador — completo</h3>
+          <p>El panel más avanzado de las tres opciones. Incluye búsqueda detallada, gráficas de avance por zona y visualización de las áreas pendientes de cubrir.</p>
+          <ul class="feat-list">
+            <li><span class="dot"></span><span class="inc">✓</span> Panel completo de búsqueda y consulta de registros</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Estadísticas básicas: total del día, registros por encuestador, pendientes</li>
+            <li><span class="dot"></span><span class="inc">✓</span> Gráficas de avance por zona y visualización de zonas pendientes de cubrir</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="time-block" style="margin-top:32px">
+      <div class="time-head">Tiempo estimado de desarrollo — Opción 3</div>
+      <div class="time-grid">
+        <div class="time-cell"><div class="time-n">1 programador</div><div class="time-val">7 – 9 meses</div><div class="time-sub">aprox. 28–36 semanas</div></div>
+        <div class="time-cell"><div class="time-n">2 programadores</div><div class="time-val">4.5 – 6 meses</div><div class="time-sub">aprox. 18–24 semanas</div></div>
+        <div class="time-cell"><div class="time-n">3 programadores</div><div class="time-val">3 – 4 meses</div><div class="time-sub">aprox. 12–16 semanas</div></div>
+      </div>
+      <div class="time-note">Es la opción más completa y también la de mayor alcance técnico. La verificación facial, la huella dactilar y el panel avanzado requieren más tiempo de desarrollo y pruebas. Con tres programadores trabajando en paralelo el tiempo se reduce considerablemente. La inversión necesaria es mayor que en las Opciones 1 y 2.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARATIVA -->
+<section id="comparativa">
+  <p class="sec-label">04 — Comparativa de opciones</p>
+  <h2>¿Qué incluye cada opción?</h2>
+  <p>La siguiente tabla muestra de forma resumida qué está incluido en cada opción para que pueda evaluarlas de un vistazo.</p>
+
+  <div style="overflow-x:auto;margin-top:8px">
+  <table class="compare">
+    <thead>
+      <tr>
+        <th>Funcionalidad</th>
+        <th class="optcol">Opción 1</th>
+        <th class="optcol">Opción 2</th>
+        <th class="optcol">Opción 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="4" style="background:var(--cream2);font-size:11px;font-weight:500;color:var(--mid);padding:8px 14px;letter-spacing:.06em;text-transform:uppercase">Acceso y seguridad</td></tr>
+      <tr><td>Inicio de sesión con usuario y contraseña</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Roles de acceso (administrador / encuestador)</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Acceso sin internet (sesión persistente)</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Verificación con huella dactilar del encuestador</td><td class="optcol dash">—</td><td class="optcol dash">—</td><td class="optcol chk">✓</td></tr>
+      <tr><td colspan="4" style="background:var(--cream2);font-size:11px;font-weight:500;color:var(--mid);padding:8px 14px;letter-spacing:.06em;text-transform:uppercase">Captura de datos</td></tr>
+      <tr><td>Formulario manual del ciudadano y vivienda</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Foto de vivienda con GPS automático</td><td class="optcol dash">—</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Lectura automática de INE (sin escribir datos)</td><td class="optcol dash">—</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Fotos privadas (no aparecen en galería del teléfono)</td><td class="optcol dash">—</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td colspan="4" style="background:var(--cream2);font-size:11px;font-weight:500;color:var(--mid);padding:8px 14px;letter-spacing:.06em;text-transform:uppercase">Sincronización sin internet</td></tr>
+      <tr><td>Guardar datos aunque no haya señal</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Subir automáticamente al detectar Wi-Fi o 4G</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td colspan="4" style="background:var(--cream2);font-size:11px;font-weight:500;color:var(--mid);padding:8px 14px;letter-spacing:.06em;text-transform:uppercase">Firma e identidad</td></tr>
+      <tr><td>Firma del ciudadano con el dedo en pantalla</td><td class="optcol dash">—</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Verificación facial (rostro vs foto de INE)</td><td class="optcol dash">—</td><td class="optcol dash">—</td><td class="optcol chk">✓ *</td></tr>
+      <tr><td colspan="4" style="background:var(--cream2);font-size:11px;font-weight:500;color:var(--mid);padding:8px 14px;letter-spacing:.06em;text-transform:uppercase">Panel del administrador</td></tr>
+      <tr><td>Lista de registros con filtros básicos</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Estadísticas básicas del avance</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Contador en tiempo real</td><td class="optcol dash">—</td><td class="optcol chk">✓</td><td class="optcol chk">✓</td></tr>
+      <tr><td>Gráficas por zona y mapa de pendientes</td><td class="optcol dash">—</td><td class="optcol dash">—</td><td class="optcol chk">✓</td></tr>
+      <tr><td colspan="4" style="background:var(--cream2);font-size:11px;font-weight:500;color:var(--mid);padding:8px 14px;letter-spacing:.06em;text-transform:uppercase">Inversión y tiempo</td></tr>
+      <tr><td>Inversión necesaria</td><td class="optcol" style="color:var(--g700);font-weight:500">Base</td><td class="optcol" style="color:var(--a700);font-weight:500">Mayor que Op. 1</td><td class="optcol" style="color:var(--r600);font-weight:500">La más elevada</td></tr>
+      <tr><td>Tiempo (con 1 programador)</td><td class="optcol">4 – 5 meses</td><td class="optcol">5.5 – 7 meses</td><td class="optcol">7 – 9 meses</td></tr>
+      <tr><td>Tiempo (con 2 programadores)</td><td class="optcol">2.5 – 3 meses</td><td class="optcol">3.5 – 4.5 meses</td><td class="optcol">4.5 – 6 meses</td></tr>
+      <tr><td>Tiempo (con 3 programadores)</td><td class="optcol">2 – 2.5 meses</td><td class="optcol">2.5 – 3 meses</td><td class="optcol">3 – 4 meses</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">* La verificación facial de la Opción 3 requiere conexión a internet en el momento de validar y tiene un costo operativo por uso. En zonas sin señal este paso no podrá realizarse.</p>
+</section>
+
+<!-- 05 REQUERIMIENTOS -->
+<section id="requerimientos">
+  <p class="sec-label">05 — Información requerida</p>
+  <h2>¿Qué necesitamos saber antes de comenzar?</h2>
+  <p>Para diseñar correctamente la aplicación necesitamos que el cliente defina o proporcione lo siguiente. Sin esta información no es posible dimensionar el proyecto con precisión.</p>
+  <div class="req-grid">
+    <div class="req-block">
+      <h3>El formulario del censo</h3>
+      <ul class="req-list">
+        <li><span class="dot"></span>Lista completa de preguntas (campos exactos)</li>
+        <li><span class="dot"></span>¿Qué campos son obligatorios y cuáles opcionales?</li>
+        <li><span class="dot"></span>¿Se registra una persona por familia o todos los miembros del hogar?</li>
+        <li><span class="dot"></span>¿Se necesita capturar más de una INE por vivienda?</li>
+      </ul>
+    </div>
+    <div class="req-block">
+      <h3>Los encuestadores y los teléfonos</h3>
+      <ul class="req-list">
+        <li><span class="dot"></span>¿Cuántos encuestadores usarán la app al mismo tiempo?</li>
+        <li><span class="dot"></span>¿Los teléfonos los provee el municipio o son de los encuestadores?</li>
+        <li><span class="dot"></span>¿Hay un punto fijo con internet donde sincronizar al final del día?</li>
+      </ul>
+    </div>
+    <div class="req-block">
+      <h3>Aspectos legales</h3>
+      <ul class="req-list">
+        <li><span class="dot"></span>¿El censo tiene respaldo oficial del municipio o institución?</li>
+        <li><span class="dot"></span>¿Se necesita aviso de privacidad antes de capturar la INE?</li>
+        <li><span class="dot"></span>¿Las fotos de las INEs deben guardarse o solo los datos extraídos?</li>
+        <li><span class="dot"></span>¿Se requiere un comprobante para el ciudadano?</li>
+      </ul>
+    </div>
+    <div class="req-block">
+      <h3>Entregables finales</h3>
+      <ul class="req-list">
+        <li><span class="dot"></span>¿Qué estadisticas exactas se requieren mostrar?</li>
+        <li><span class="dot"></span>¿Se necesita capacitación para los encuestadores?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>Documento preparado para revisión del cliente · Versión 1.0 · Marzo 2026 · Confidencial</p>
+</footer>
+
+<script>
+function showOpt(id, btn) {
+  document.querySelectorAll('.opt-pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.opt-tab').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+</script>
+</body>
+</html>
